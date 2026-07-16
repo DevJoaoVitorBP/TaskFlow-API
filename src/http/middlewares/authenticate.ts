@@ -14,10 +14,7 @@ interface JwtPayload {
  * Se o token for válido, anexa o userId ao request para uso posterior
  * Se inválido ou expirado, retorna 401 Unauthorized
  */
-export async function authenticate(
-  request: FastifyRequest,
-  reply: FastifyReply
-): Promise<void> {
+export async function authenticate(request: FastifyRequest, reply: FastifyReply): Promise<void> {
   const authHeader = request.headers.authorization
 
   if (!authHeader) {

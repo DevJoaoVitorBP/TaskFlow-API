@@ -18,22 +18,32 @@ export async function getTaskById(id: string, userId: string) {
   })
 }
 
+interface TaskFilters {
+  status?: string[]
+  priority?: string[]
+  title?: string
+  createdAfter?: Date
+  createdBefore?: Date
+}
+
+interface TaskWhereInput {
+  userId: string
+  status?: { in: string[] }
+  priority?: { in: string[] }
+  title?: { contains: string; mode: 'insensitive' }
+  createdAt?: { gte?: Date; lte?: Date }
+}
+
 export async function getTasksByUserId(
   userId: string,
   page: number = 1,
   limit: number = 10,
-  filters?: {
-    status?: string[]
-    priority?: string[]
-    title?: string
-    createdAfter?: Date
-    createdBefore?: Date
-  }
+  filters?: TaskFilters,
 ) {
   const skip = (page - 1) * limit
 
   // Constrói o objeto 'where' dinamicamente com os filtros
-  const where: any = { userId }
+  const where: TaskWhereInput = { userId }
 
   // Filtro de status: se fornecido, filtra por um ou mais statuses
   if (filters?.status && filters.status.length > 0) {
@@ -91,7 +101,7 @@ export async function updateTask(
     description?: string
     priority?: TaskPriority
     status?: TaskStatus
-  }
+  },
 ) {
   return prisma.task.updateMany({
     where: { id, userId },

@@ -1,16 +1,16 @@
-import { FastifyInstance } from 'fastify'
+import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify'
 import { authenticate } from '../middlewares/authenticate'
 import { requireAuth } from '../middlewares/requireAuth'
 
 /**
  * Exemplo de rotas protegidas por autenticação JWT
- * 
+ *
  * Este arquivo demonstra como usar os middlewares authenticate() e requireAuth()
  * para proteger rotas, garantindo que apenas usuários autenticados possam acessá-las
  */
 
 // Exemplo de controller para listar tarefas do usuário
-async function listTasksController(request: any, reply: any) {
+async function listTasksController(request: FastifyRequest, _reply: FastifyReply) {
   const userId = request.userId // Disponível porque passou pelo middleware authenticate
 
   return {
@@ -23,13 +23,13 @@ async function listTasksController(request: any, reply: any) {
 }
 
 // Exemplo de controller para criar uma tarefa
-async function createTaskController(request: any, reply: any) {
+async function createTaskController(request: FastifyRequest, _reply: FastifyReply) {
   const userId = request.userId
 
   return {
     id: 3,
     userId,
-    title: request.body.title,
+    title: request.body,
     completed: false,
   }
 }
@@ -52,16 +52,16 @@ export async function taskRoutes(app: FastifyInstance) {
    * OPÇÃO 3: Agrupar rotas protegidas
    * Todos os endpoints dentro deste bloco herdam os middlewares
    */
-  app.register(async (app) => {
+  app.register(async app => {
     // Aplicar middlewares globais a todas as rotas deste registro
     app.addHook('preHandler', authenticate)
 
-    app.get('/tasks/summary', async (request: any, reply: any) => {
+    app.get('/tasks/summary', async (request: FastifyRequest, _reply: FastifyReply) => {
       const userId = request.userId
       return { userId, summary: 'Resumo de tarefas' }
     })
 
-    app.delete('/tasks/:id', async (request: any, reply: any) => {
+    app.delete('/tasks/:id', async (request: FastifyRequest, _reply: FastifyReply) => {
       const userId = request.userId
       const taskId = request.params.id
 
@@ -72,7 +72,7 @@ export async function taskRoutes(app: FastifyInstance) {
 
 /**
  * COMO USAR NA PRÁTICA
- * 
+ *
  * 1. Sem autenticação (falha):
  *    GET /tasks
  *    → 401 { error: "Missing authorization header" }

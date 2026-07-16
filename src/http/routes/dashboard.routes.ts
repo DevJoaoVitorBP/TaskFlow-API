@@ -39,6 +39,6 @@ export async function dashboardRoutes(app: FastifyInstance) {
         },
       },
     },
-    getDashboardStatsController
+    getDashboardStatsController,
   )
 }

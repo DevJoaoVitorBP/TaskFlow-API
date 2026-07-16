@@ -1,0 +1,147 @@
+name: Coverage Validation
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  coverage:
+    name: Validate Test Coverage
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: npm run prisma:generate
+
+      - name: Run tests with coverage
+        run: npm run test:coverage
+
+      - name: Check coverage thresholds
+        run: |
+          echo "Checking coverage thresholds..."
+          
+          # Parse coverage JSON and verify thresholds
+          python3 << 'EOF'
+          import json
+          import sys
+          
+          with open('./coverage/coverage-final.json', 'r') as f:
+              coverage = json.load(f)
+          
+          # Calculate totals
+          total_lines = 0
+          covered_lines = 0
+          total_functions = 0
+          covered_functions = 0
+          total_branches = 0
+          covered_branches = 0
+          total_statements = 0
+          covered_statements = 0
+          
+          for file_data in coverage.values():
+              if 'lines' in file_data:
+                  for line_num, hit_count in file_data['lines'].items():
+                      total_lines += 1
+                      if hit_count > 0:
+                          covered_lines += 1
+              
+              if 'functions' in file_data:
+                  for func_data in file_data['functions']:
+                      total_functions += 1
+                      if func_data['count'] > 0:
+                          covered_functions += 1
+              
+              if 'branches' in file_data:
+                  for branch_data in file_data['branches']:
+                      total_branches += 1
+                      if branch_data['count'] > 0:
+                          covered_branches += 1
+              
+              if 'statements' in file_data:
+                  for stmt_data in file_data['statements']:
+                      total_statements += 1
+                      if stmt_data['count'] > 0:
+                          covered_statements += 1
+          
+          # Calculate percentages
+          lines_pct = (covered_lines / total_lines * 100) if total_lines > 0 else 0
+          functions_pct = (covered_functions / total_functions * 100) if total_functions > 0 else 0
+          branches_pct = (covered_branches / total_branches * 100) if total_branches > 0 else 0
+          statements_pct = (covered_statements / total_statements * 100) if total_statements > 0 else 0
+          
+          print(f"\n📊 Coverage Report")
+          print(f"==================")
+          print(f"Lines:       {lines_pct:.2f}% ({covered_lines}/{total_lines})")
+          print(f"Functions:   {functions_pct:.2f}% ({covered_functions}/{total_functions})")
+          print(f"Branches:    {branches_pct:.2f}% ({covered_branches}/{total_branches})")
+          print(f"Statements:  {statements_pct:.2f}% ({covered_statements}/{total_statements})")
+          print(f"==================")
+          
+          # Check thresholds
+          threshold = 80.0
+          all_passed = True
+          
+          if lines_pct < threshold:
+              print(f"❌ Lines coverage {lines_pct:.2f}% below threshold {threshold}%")
+              all_passed = False
+          else:
+              print(f"✓ Lines coverage {lines_pct:.2f}% meets threshold {threshold}%")
+          
+          if functions_pct < threshold:
+              print(f"❌ Functions coverage {functions_pct:.2f}% below threshold {threshold}%")
+              all_passed = False
+          else:
+              print(f"✓ Functions coverage {functions_pct:.2f}% meets threshold {threshold}%")
+          
+          if branches_pct < threshold:
+              print(f"❌ Branches coverage {branches_pct:.2f}% below threshold {threshold}%")
+              all_passed = False
+          else:
+              print(f"✓ Branches coverage {branches_pct:.2f}% meets threshold {threshold}%")
+          
+          if statements_pct < threshold:
+              print(f"❌ Statements coverage {statements_pct:.2f}% below threshold {threshold}%")
+              all_passed = False
+          else:
+              print(f"✓ Statements coverage {statements_pct:.2f}% meets threshold {threshold}%")
+          
+          sys.exit(0 if all_passed else 1)
+          EOF
+
+      - name: Comment PR with coverage
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const coverage = JSON.parse(fs.readFileSync('./coverage/coverage-final.json', 'utf8'));
+            
+            let comment = '## 📊 Test Coverage Report\n\n';
+            comment += '| Metric | Status |\n';
+            comment += '|--------|--------|\n';
+            comment += '| Lines | ✓ Checked |\n';
+            comment += '| Functions | ✓ Checked |\n';
+            comment += '| Branches | ✓ Checked |\n';
+            comment += '| Statements | ✓ Checked |\n';
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });

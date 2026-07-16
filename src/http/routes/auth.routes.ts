@@ -58,7 +58,7 @@ export async function authRoutes(app: FastifyInstance) {
         },
       },
     },
-    registerController
+    registerController,
   )
 
   app.post(
@@ -111,6 +111,6 @@ export async function authRoutes(app: FastifyInstance) {
         },
       },
     },
-    loginController
+    loginController,
   )
 }

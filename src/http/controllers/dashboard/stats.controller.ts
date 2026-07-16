@@ -1,10 +1,7 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
 import { getDashboardStatsService } from '../../../services/dashboard.service'
 
-export async function getDashboardStatsController(
-  request: FastifyRequest,
-  reply: FastifyReply
-) {
+export async function getDashboardStatsController(request: FastifyRequest, reply: FastifyReply) {
   const { userId } = request
   const stats = await getDashboardStatsService(userId)
 

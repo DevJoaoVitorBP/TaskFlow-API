@@ -63,7 +63,7 @@ export async function taskRoutes(app: FastifyInstance) {
         },
       },
     },
-    createTaskController
+    createTaskController,
   )
 
   // List all tasks with filters and pagination
@@ -140,7 +140,7 @@ export async function taskRoutes(app: FastifyInstance) {
         },
       },
     },
-    listTasksController
+    listTasksController,
   )
 
   // Get a single task by ID
@@ -171,7 +171,7 @@ export async function taskRoutes(app: FastifyInstance) {
         },
       },
     },
-    getTaskController
+    getTaskController,
   )
 
   // Update a task
@@ -229,7 +229,7 @@ export async function taskRoutes(app: FastifyInstance) {
         },
       },
     },
-    updateTaskController
+    updateTaskController,
   )
 
   // Delete a task
@@ -263,7 +263,7 @@ export async function taskRoutes(app: FastifyInstance) {
         },
       },
     },
-    deleteTaskController
+    deleteTaskController,
   )
 
   // Mark a task as complete
@@ -295,6 +295,6 @@ export async function taskRoutes(app: FastifyInstance) {
         },
       },
     },
-    completeTaskController
+    completeTaskController,
   )
 }

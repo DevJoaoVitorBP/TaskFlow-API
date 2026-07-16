@@ -15,7 +15,7 @@ export async function createTaskService(
     title: string
     description?: string
     priority: TaskPriority
-  }
+  },
 ) {
   const task = await createTask({
     ...data,
@@ -45,7 +45,7 @@ export async function getTasksService(
     title?: string
     createdAfter?: Date
     createdBefore?: Date
-  }
+  },
 ) {
   const result = await getTasksByUserId(userId, page, limit, filters)
   return result
@@ -59,7 +59,7 @@ export async function updateTaskService(
     description?: string
     priority?: TaskPriority
     status?: TaskStatus
-  }
+  },
 ) {
   // Verifica se a tarefa existe e pertence ao usuário
   const task = await getTaskById(id, userId)

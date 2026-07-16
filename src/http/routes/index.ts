@@ -10,8 +10,7 @@ export async function routes(app: FastifyInstance) {
       schema: {
         tags: ['Health'],
         summary: 'Health check endpoint',
-        description:
-          'Check if the API server is running and healthy. No authentication required.',
+        description: 'Check if the API server is running and healthy. No authentication required.',
         response: {
           200: {
             description: 'Server is healthy',
@@ -29,7 +28,7 @@ export async function routes(app: FastifyInstance) {
     },
     async () => {
       return { status: 'ok', timestamp: new Date().toISOString() }
-    }
+    },
   )
 
   await app.register(authRoutes)

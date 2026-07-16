@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
 import { createTaskService } from '../../../services/task.service'
+import { TaskPriority } from '../../../generated/prisma/enums'
 
 const createTaskSchema = z.object({
   title: z.string().min(1, 'Title is required').max(255, 'Title must not exceed 255 characters'),
@@ -15,7 +16,7 @@ export async function createTaskController(request: FastifyRequest, reply: Fasti
   const task = await createTaskService(userId, {
     title,
     description,
-    priority: priority as any,
+    priority: priority as TaskPriority,
   })
 
   return reply.status(201).send(task)

@@ -12,10 +12,10 @@ const listTasksQuerySchema = z
     createdAfter: z.string().datetime().optional(),
     createdBefore: z.string().datetime().optional(),
   })
-  .transform((data) => ({
+  .transform(data => ({
     ...data,
-    status: data.status ? data.status.split(',').map((v) => v.trim().toUpperCase()) : undefined,
-    priority: data.priority ? data.priority.split(',').map((v) => v.trim().toUpperCase()) : undefined,
+    status: data.status ? data.status.split(',').map(v => v.trim().toUpperCase()) : undefined,
+    priority: data.priority ? data.priority.split(',').map(v => v.trim().toUpperCase()) : undefined,
   }))
 
 export async function listTasksController(request: FastifyRequest, reply: FastifyReply) {
