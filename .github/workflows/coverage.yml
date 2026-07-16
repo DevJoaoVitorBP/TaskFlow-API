@@ -34,7 +34,8 @@ jobs:
         run: |
           echo "Checking coverage thresholds..."
           
-          # Parse coverage JSON and verify thresholds
+          # Parse v8 coverage JSON and verify thresholds
+          # v8/istanbul format uses 's' (statements), 'f' (functions), 'b' (branches)
           python3 << 'EOF'
           import json
           import sys
@@ -42,82 +43,77 @@ jobs:
           with open('./coverage/coverage-final.json', 'r') as f:
               coverage = json.load(f)
           
-          # Calculate totals
-          total_lines = 0
-          covered_lines = 0
+          total_statements = 0
+          covered_statements = 0
           total_functions = 0
           covered_functions = 0
           total_branches = 0
           covered_branches = 0
-          total_statements = 0
-          covered_statements = 0
+          total_lines = 0
+          covered_lines = 0
           
           for file_data in coverage.values():
-              if 'lines' in file_data:
-                  for line_num, hit_count in file_data['lines'].items():
-                      total_lines += 1
+              # 's' is {stmt_id: hit_count}
+              if 's' in file_data:
+                  for hit_count in file_data['s'].values():
+                      total_statements += 1
                       if hit_count > 0:
-                          covered_lines += 1
+                          covered_statements += 1
               
-              if 'functions' in file_data:
-                  for func_data in file_data['functions']:
+              # 'f' is {fn_id: hit_count}
+              if 'f' in file_data:
+                  for hit_count in file_data['f'].values():
                       total_functions += 1
-                      if func_data['count'] > 0:
+                      if hit_count > 0:
                           covered_functions += 1
               
-              if 'branches' in file_data:
-                  for branch_data in file_data['branches']:
-                      total_branches += 1
-                      if branch_data['count'] > 0:
-                          covered_branches += 1
+              # 'b' is {branch_id: [hit_count_per_location, ...]}
+              if 'b' in file_data:
+                  for branch_counts in file_data['b'].values():
+                      for hit_count in branch_counts:
+                          total_branches += 1
+                          if hit_count > 0:
+                              covered_branches += 1
               
-              if 'statements' in file_data:
-                  for stmt_data in file_data['statements']:
-                      total_statements += 1
-                      if stmt_data['count'] > 0:
-                          covered_statements += 1
+              # Derive lines from statementMap + s
+              if 'statementMap' in file_data and 's' in file_data:
+                  line_hits = {}
+                  for stmt_id, stmt_loc in file_data['statementMap'].items():
+                      line = stmt_loc['start']['line']
+                      hit = file_data['s'].get(stmt_id, 0)
+                      line_hits[line] = max(line_hits.get(line, 0), hit)
+                  for hits in line_hits.values():
+                      total_lines += 1
+                      if hits > 0:
+                          covered_lines += 1
           
-          # Calculate percentages
-          lines_pct = (covered_lines / total_lines * 100) if total_lines > 0 else 0
-          functions_pct = (covered_functions / total_functions * 100) if total_functions > 0 else 0
-          branches_pct = (covered_branches / total_branches * 100) if total_branches > 0 else 0
           statements_pct = (covered_statements / total_statements * 100) if total_statements > 0 else 0
+          functions_pct = (covered_functions / total_functions * 100) if total_functions > 0 else 0
+          branches_pct = (covered_branches / total_branches * 100) if total_branches > 0 else 100.0
+          lines_pct = (covered_lines / total_lines * 100) if total_lines > 0 else 0
           
           print(f"\n📊 Coverage Report")
           print(f"==================")
-          print(f"Lines:       {lines_pct:.2f}% ({covered_lines}/{total_lines})")
+          print(f"Statements:  {statements_pct:.2f}% ({covered_statements}/{total_statements})")
           print(f"Functions:   {functions_pct:.2f}% ({covered_functions}/{total_functions})")
           print(f"Branches:    {branches_pct:.2f}% ({covered_branches}/{total_branches})")
-          print(f"Statements:  {statements_pct:.2f}% ({covered_statements}/{total_statements})")
+          print(f"Lines:       {lines_pct:.2f}% ({covered_lines}/{total_lines})")
           print(f"==================")
           
-          # Check thresholds
           threshold = 80.0
           all_passed = True
           
-          if lines_pct < threshold:
-              print(f"❌ Lines coverage {lines_pct:.2f}% below threshold {threshold}%")
-              all_passed = False
-          else:
-              print(f"✓ Lines coverage {lines_pct:.2f}% meets threshold {threshold}%")
-          
-          if functions_pct < threshold:
-              print(f"❌ Functions coverage {functions_pct:.2f}% below threshold {threshold}%")
-              all_passed = False
-          else:
-              print(f"✓ Functions coverage {functions_pct:.2f}% meets threshold {threshold}%")
-          
-          if branches_pct < threshold:
-              print(f"❌ Branches coverage {branches_pct:.2f}% below threshold {threshold}%")
-              all_passed = False
-          else:
-              print(f"✓ Branches coverage {branches_pct:.2f}% meets threshold {threshold}%")
-          
-          if statements_pct < threshold:
-              print(f"❌ Statements coverage {statements_pct:.2f}% below threshold {threshold}%")
-              all_passed = False
-          else:
-              print(f"✓ Statements coverage {statements_pct:.2f}% meets threshold {threshold}%")
+          for label, pct, covered, total in [
+              ('Statements', statements_pct, covered_statements, total_statements),
+              ('Functions',  functions_pct,  covered_functions,  total_functions),
+              ('Branches',   branches_pct,   covered_branches,   total_branches),
+              ('Lines',      lines_pct,      covered_lines,      total_lines),
+          ]:
+              if pct < threshold:
+                  print(f"❌ {label} coverage {pct:.2f}% below threshold {threshold}%")
+                  all_passed = False
+              else:
+                  print(f"✓ {label} coverage {pct:.2f}% meets threshold {threshold}%")
           
           sys.exit(0 if all_passed else 1)
           EOF
