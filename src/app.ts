@@ -3,6 +3,7 @@ import cors from '@fastify/cors'
 import { ZodError } from 'zod'
 import { AppError } from './utils/errors'
 import { routes } from './http/routes'
+import { setupSwagger } from './lib/swagger'
 
 export async function buildApp() {
   const app = fastify({
@@ -37,6 +38,7 @@ export async function buildApp() {
     return reply.status(500).send({ error: 'Internal server error' })
   })
 
+  await setupSwagger(app)
   await app.register(routes)
 
   return app
