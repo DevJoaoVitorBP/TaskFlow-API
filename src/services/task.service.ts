@@ -35,8 +35,19 @@ export async function getTaskByIdService(id: string, userId: string) {
   return task
 }
 
-export async function getTasksService(userId: string, page: number = 1, limit: number = 10) {
-  const result = await getTasksByUserId(userId, page, limit)
+export async function getTasksService(
+  userId: string,
+  page: number = 1,
+  limit: number = 10,
+  filters?: {
+    status?: string[]
+    priority?: string[]
+    title?: string
+    createdAfter?: Date
+    createdBefore?: Date
+  }
+) {
+  const result = await getTasksByUserId(userId, page, limit, filters)
   return result
 }
 
