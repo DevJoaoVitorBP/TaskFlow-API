@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   postgres:
     image: postgres:16-alpine
@@ -16,7 +18,66 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - taskflow_network
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: taskflow_api
+    restart: unless-stopped
+    ports:
+      - '${PORT:-3333}:3333'
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: ${PORT:-3333}
+      HOST: 0.0.0.0
+      DATABASE_URL: postgresql://${POSTGRES_USER:-taskflow}:${POSTGRES_PASSWORD:-taskflow123}@postgres:5432/${POSTGRES_DB:-taskflow_db}?schema=public
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - taskflow_network
+    volumes:
+      - ./prisma:/app/prisma
+    command: sh -c "npx prisma migrate deploy && node dist/server.js"
+
+  # Development variant (optional)
+  api-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: taskflow_api_dev
+    restart: unless-stopped
+    ports:
+      - '3334:3333'
+    environment:
+      NODE_ENV: development
+      PORT: 3333
+      HOST: 0.0.0.0
+      DATABASE_URL: postgresql://${POSTGRES_USER:-taskflow}:${POSTGRES_PASSWORD:-taskflow123}@postgres:5432/${POSTGRES_DB:-taskflow_db}?schema=public
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - taskflow_network
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - ./prisma:/app/prisma
+    command: npm run dev
+    profiles:
+      - dev
 
 volumes:
   taskflow_postgres_data:
     driver: local
+
+networks:
+  taskflow_network:
+    driver: bridge
