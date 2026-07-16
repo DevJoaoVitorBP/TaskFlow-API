@@ -35,9 +35,9 @@ export async function getTaskByIdService(id: string, userId: string) {
   return task
 }
 
-export async function getTasksService(userId: string) {
-  const tasks = await getTasksByUserId(userId)
-  return tasks
+export async function getTasksService(userId: string, page: number = 1, limit: number = 10) {
+  const result = await getTasksByUserId(userId, page, limit)
+  return result
 }
 
 export async function updateTaskService(

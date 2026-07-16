@@ -18,11 +18,29 @@ export async function getTaskById(id: string, userId: string) {
   })
 }
 
-export async function getTasksByUserId(userId: string) {
-  return prisma.task.findMany({
-    where: { userId },
-    orderBy: { createdAt: 'desc' },
-  })
+export async function getTasksByUserId(userId: string, page: number = 1, limit: number = 10) {
+  const skip = (page - 1) * limit
+
+  const [tasks, totalItems] = await Promise.all([
+    prisma.task.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+      skip,
+      take: limit,
+    }),
+    prisma.task.count({
+      where: { userId },
+    }),
+  ])
+
+  const totalPages = Math.ceil(totalItems / limit)
+
+  return {
+    data: tasks,
+    page,
+    totalPages,
+    totalItems,
+  }
 }
 
 export async function updateTask(
