@@ -1,5 +1,6 @@
 import { FastifyInstance } from 'fastify'
 import { authRoutes } from './auth.routes'
+import { taskRoutes } from './task.routes'
 
 export async function routes(app: FastifyInstance) {
   app.get('/health', async () => {
@@ -7,4 +8,5 @@ export async function routes(app: FastifyInstance) {
   })
 
   await app.register(authRoutes)
+  await app.register(taskRoutes)
 }
