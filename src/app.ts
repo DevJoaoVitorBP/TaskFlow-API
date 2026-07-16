@@ -1,5 +1,7 @@
 import fastify from 'fastify'
 import cors from '@fastify/cors'
+import { ZodError } from 'zod'
+import { AppError } from './utils/errors'
 import { routes } from './http/routes'
 
 export async function buildApp() {
@@ -17,6 +19,22 @@ export async function buildApp() {
 
   await app.register(cors, {
     origin: true,
+  })
+
+  app.setErrorHandler((error, _request, reply) => {
+    if (error instanceof AppError) {
+      return reply.status(error.statusCode).send({ error: error.message })
+    }
+
+    if (error instanceof ZodError) {
+      return reply.status(422).send({
+        error: 'Validation error',
+        issues: error.flatten().fieldErrors,
+      })
+    }
+
+    app.log.error(error)
+    return reply.status(500).send({ error: 'Internal server error' })
   })
 
   await app.register(routes)
