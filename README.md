@@ -1,164 +1,333 @@
-# TaskFlow API
+# 🚀 TaskFlow API
 
-## Sobre o projeto
+> API REST desenvolvida com **Fastify**, **TypeScript** e **Prisma ORM** para gerenciamento de tarefas, construída seguindo boas práticas de arquitetura em camadas, autenticação JWT e documentação automática com Swagger.
 
-API REST para gerenciamento de tarefas com autenticação JWT, construída para simular um fluxo real de backend — desde o cadastro de usuários até a consulta de estatísticas via dashboard. O objetivo técnico foi aplicar uma arquitetura em camadas (controllers, services, repositories), validação de dados com Zod e isolamento de dados por usuário em todas as operações.
+<p align="center">
 
----
+![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white)
+![Node](https://img.shields.io/badge/Node.js-20+-339933?logo=node.js&logoColor=white)
+![Fastify](https://img.shields.io/badge/Fastify-v5-000000?logo=fastify&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?logo=prisma)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)
+![Swagger](https://img.shields.io/badge/API-Swagger-85EA2D?logo=swagger&logoColor=black)
+![Tests](https://img.shields.io/badge/Tests-100%25-success)
 
-## Funcionalidades
-
-- Cadastro e autenticação de usuários com hash de senha (bcrypt) e token JWT
-- CRUD completo de tarefas: criar, listar, buscar por ID, atualizar e deletar
-- Marcação de tarefa como concluída via endpoint dedicado (`PATCH /tasks/:id/complete`)
-- Filtros avançados na listagem de tarefas: status, prioridade, título (busca parcial), intervalo de datas
-- Paginação configurável na listagem (`page` e `limit`)
-- Endpoint de dashboard com estatísticas do usuário autenticado (total, concluídas, pendentes, taxa de conclusão)
-- Isolamento de dados por usuário: nenhum usuário acessa as tarefas de outro
-- Documentação interativa da API gerada automaticamente com Swagger UI
-- Containerização completa com Docker e Docker Compose
+</p>
 
 ---
 
-## Tecnologias utilizadas
+## 📖 Sobre o projeto
 
-**Linguagem**
+O **TaskFlow API** foi desenvolvido para simular um backend utilizado em um ambiente real de produção.
+
+Além do CRUD de tarefas, o projeto demonstra conceitos importantes de desenvolvimento backend, incluindo:
+
+- Arquitetura em camadas
+- Repository Pattern
+- Autenticação JWT
+- Validação de dados
+- Isolamento de dados entre usuários
+- Testes automatizados
+- Docker
+- Documentação automática
+
+---
+
+# ✨ Principais funcionalidades
+
+- 🔐 Cadastro e autenticação com JWT
+- 🔒 Hash de senha utilizando bcrypt
+- ✅ CRUD completo de tarefas
+- 📊 Dashboard com estatísticas
+- 🔍 Filtros avançados
+- 📄 Paginação
+- 📚 Swagger UI
+- 🐳 Docker e Docker Compose
+- 🧪 Testes unitários
+- 👤 Isolamento de dados por usuário
+
+---
+
+# 🏗 Arquitetura
+
+O projeto segue uma arquitetura em camadas para separar responsabilidades.
+
+```
+Client
+   │
+   ▼
+Controllers
+   │
+   ▼
+Services
+   │
+   ▼
+Repositories
+   │
+   ▼
+Prisma ORM
+   │
+   ▼
+PostgreSQL
+```
+
+Cada camada possui uma responsabilidade específica, facilitando manutenção, testes e evolução do sistema.
+
+---
+
+# 🛠 Tecnologias
+
+## Backend
+
 - TypeScript
+- Node.js
+- Fastify
 
-**Framework**
-- Fastify v5
+## Banco de dados
 
-**ORM / Banco de dados**
-- Prisma ORM (com output customizado)
 - PostgreSQL 16
+- Prisma ORM
 
-**Autenticação**
-- JSON Web Token (`jsonwebtoken`) — expiração de 7 dias
-- `bcryptjs` para hash de senhas
+## Autenticação
 
-**Validação**
-- Zod v4 — validação de body, params e query strings
+- JWT
+- bcryptjs
 
-**Testes**
-- Vitest com cobertura via `@vitest/coverage-v8`
-- 20 testes unitários com 100% de cobertura em Statements, Branches, Functions e Lines
+## Validação
 
-**Documentação**
-- `@fastify/swagger` + `@fastify/swagger-ui`
+- Zod
 
-**Infraestrutura / DevOps**
-- Docker (multi-stage build: base → dependencies → builder → production)
-- Docker Compose (PostgreSQL + API em produção; perfil `dev` com live reload)
-- `dumb-init` para tratamento de sinais; usuário não-root em produção
+## Testes
 
-**Ferramentas**
-- `tsup` (build), `tsx` (execução em desenvolvimento)
-- ESLint + Prettier
-- `dotenv`
+- Vitest
+- Coverage V8
+
+## Documentação
+
+- Swagger
+- Swagger UI
+
+## Infraestrutura
+
+- Docker
+- Docker Compose
 
 ---
 
-## Como executar o projeto
+# 📁 Estrutura do projeto
 
-### Pré-requisitos
+```text
+src/
+├── config/
+├── http/
+│   ├── controllers/
+│   ├── middlewares/
+│   └── routes/
+├── lib/
+├── repositories/
+├── services/
+├── types/
+└── utils/
+
+prisma/
+
+tests/
+
+docs/
+```
+
+---
+
+# 🔑 Fluxo de autenticação
+
+```text
+Cadastro
+      │
+      ▼
+
+Hash da senha (bcrypt)
+
+      │
+      ▼
+
+Login
+
+      │
+      ▼
+
+JWT
+
+      │
+      ▼
+
+Middleware
+
+      │
+      ▼
+
+Rotas protegidas
+```
+
+---
+
+# 📚 Endpoints
+
+## Autenticação
+
+| Método | Endpoint |
+|---------|----------|
+| POST | /users |
+| POST | /sessions |
+
+---
+
+## Tarefas
+
+| Método | Endpoint |
+|---------|----------|
+| GET | /tasks |
+| GET | /tasks/:id |
+| POST | /tasks |
+| PUT | /tasks/:id |
+| PATCH | /tasks/:id/complete |
+| DELETE | /tasks/:id |
+
+---
+
+## Dashboard
+
+| Método | Endpoint |
+|---------|----------|
+| GET | /dashboard |
+
+---
+
+# 🚀 Executando o projeto
+
+## Pré-requisitos
 
 - Node.js 20+
-- PostgreSQL (local ou via Docker)
+- PostgreSQL
 
-### Execução local
+### Instalação
 
 ```bash
-# 1. Clone o repositório
-git clone https://github.com/<seu-usuario>/taskflow-api.git
+git clone ...
+
 cd taskflow-api
 
-# 2. Instale as dependências
 npm install
+```
 
-# 3. Configure as variáveis de ambiente
-cp .env.example .env
-# Edite o .env com os valores: DATABASE_URL, JWT_SECRET, PORT
+Configure o `.env`
 
-# 4. Execute as migrations e gere o client Prisma
+```env
+DATABASE_URL=
+JWT_SECRET=
+PORT=
+```
+
+Execute as migrations
+
+```bash
 npx prisma migrate dev
-npx prisma generate
 
-# 5. Inicie em modo desenvolvimento
+npx prisma generate
+```
+
+Inicie
+
+```bash
 npm run dev
 ```
 
-A API estará disponível em `http://localhost:3333`.  
-Documentação Swagger: `http://localhost:3333/docs`
+---
 
-### Execução com Docker
+# 🐳 Docker
+
+Produção
 
 ```bash
-# Configure o .env com: POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB, JWT_SECRET
-
-# Produção
 docker compose up -d
+```
 
-# Desenvolvimento (com live reload)
+Desenvolvimento
+
+```bash
 docker compose --profile dev up -d
 ```
 
-Ou use o script auxiliar:
+---
 
-```powershell
-.\docker-manage.ps1 up      # produção
-.\docker-manage.ps1 dev     # desenvolvimento
-.\docker-manage.ps1 logs    # logs em tempo real
-.\docker-manage.ps1 shell   # terminal no container
+# 📖 Swagger
+
+Após iniciar a aplicação:
+
+```
+http://localhost:3333/docs
 ```
 
 ---
 
-## Organização do projeto
+# 🧪 Testes
 
-```
-src/
-├── config/
-│   └── env.ts                  # Variáveis de ambiente validadas com Zod
-├── lib/
-│   ├── prisma.ts               # Instância singleton do Prisma Client
-│   └── swagger.ts              # Configuração da documentação
-├── utils/
-│   └── errors.ts               # Classe AppError com status HTTP
-├── types/
-│   └── fastify.d.ts            # Extensão do FastifyRequest (userId)
-├── repositories/               # Acesso ao banco de dados (Prisma)
-├── services/                   # Regras de negócio (lança AppError)
-└── http/
-    ├── controllers/            # Handlers HTTP organizados por domínio
-    ├── middlewares/            # Middleware de autenticação JWT
-    └── routes/                 # Definição e registro de rotas
+```bash
+npm test
 ```
 
-O tratamento de erros é centralizado via `setErrorHandler` no `app.ts`: `AppError` retorna o status configurado, `ZodError` retorna 422, e erros desconhecidos retornam 500.
+Cobertura
+
+```bash
+npm run test:coverage
+```
+
+O projeto possui cobertura de:
+
+- Statements: 100%
+- Branches: 100%
+- Functions: 100%
+- Lines: 100%
 
 ---
 
-## O que este projeto demonstra
+# 📌 Diferenciais técnicos
 
-- Construção de API REST com Fastify v5 e TypeScript com tipagem estrita
-- Arquitetura em camadas com separação clara de responsabilidades (Controller → Service → Repository)
-- Autenticação stateless com JWT e proteção de rotas via middleware
-- Validação de entrada com Zod em body, path params e query strings
-- Isolamento de dados multi-usuário com filtragem por `userId` em todas as queries
-- Consultas parametrizadas e seguras contra SQL injection via Prisma
-- Filtros dinâmicos combinados com AND/OR e paginação eficiente
-- Queries paralelas com `Promise.all()` para performance no dashboard
-- Testes unitários com mocks completos (sem I/O), padrão AAA e 100% de cobertura
-- Containerização com Docker multi-stage e boas práticas de segurança (non-root, dumb-init)
-- Documentação interativa gerada automaticamente com Swagger UI
+- Arquitetura em camadas
+- Repository Pattern
+- JWT Authentication
+- Validação com Zod
+- Prisma ORM
+- Docker Multi-stage
+- Swagger
+- Testes automatizados
+- Isolamento de dados por usuário
+- Paginação
+- Filtros dinâmicos
+- Dashboard com estatísticas
 
 ---
 
-## Melhorias futuras
+# 🛣 Roadmap
 
-- Implementar refresh token para renovação de sessão sem novo login
-- Adicionar endpoint de atualização de perfil do usuário
-- Suporte a ordenação configurável na listagem de tarefas (`sortBy`, `order`)
-- Testes de integração (E2E) com banco de dados em memória ou container isolado
-- Rate limiting por IP para os endpoints de autenticação
-- Soft delete nas tarefas em vez de remoção permanente
+- [ ] Refresh Token
+- [ ] Upload de anexos
+- [ ] Soft Delete
+- [ ] Rate Limiting
+- [ ] Logs estruturados
+- [ ] Redis Cache
+- [ ] Testes E2E
+
+---
+
+# 🤝 Contribuição
+
+Contribuições são bem-vindas.
+
+Sinta-se à vontade para abrir Issues ou Pull Requests.
+
+---
+
+# 📄 Licença
+
+Este projeto está licenciado sob a licença MIT.
