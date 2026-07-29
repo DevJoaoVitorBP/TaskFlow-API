@@ -1,6 +1,6 @@
 # 🚀 TaskFlow API
 
-🌐 **Idiomas:** [English](./README.md) | [Português](./README.pt-BR.md)
+🌐 **Idiomas:** [English](../README.md) | [Português](./README.pt-BR.md)
 
 > API REST desenvolvida com **Fastify**, **TypeScript** e **Prisma ORM** para gerenciamento de tarefas, construída seguindo boas práticas de arquitetura em camadas, autenticação JWT e documentação automática com Swagger.
 
