@@ -1,6 +1,8 @@
 # 🚀 TaskFlow API
 
-> API REST desenvolvida com **Fastify**, **TypeScript** e **Prisma ORM** para gerenciamento de tarefas, construída seguindo boas práticas de arquitetura em camadas, autenticação JWT e documentação automática com Swagger.
+🌐 **Languages:** [English](./README.md) | [Português](/docs/README.pt-BR.md)
+
+> REST API built with **Fastify**, **TypeScript**, and **Prisma ORM** for task management, following layered architecture best practices, JWT authentication, and automatic documentation with Swagger.
 
 <p align="center">
 
@@ -17,41 +19,65 @@
 
 ---
 
-## 📖 Sobre o projeto
+## 📑 Table of Contents
 
-O **TaskFlow API** foi desenvolvido para simular um backend utilizado em um ambiente real de produção.
+- [About the project](#-about-the-project)
+- [Key features](#-key-features)
+- [Architecture](#-architecture)
+- [Technologies](#-technologies)
+- [Project structure](#-project-structure)
+- [Authentication flow](#-authentication-flow)
+- [Endpoints](#-endpoints)
+- [Running the project](#-running-the-project)
+- [Docker](#-docker)
+- [Swagger](#-swagger)
+- [Tests](#-tests)
+- [Technical highlights](#-technical-highlights)
+- [Roadmap](#-roadmap)
+- [Contributing](#-contributing)
+- [License](#-license)
 
-Além do CRUD de tarefas, o projeto demonstra conceitos importantes de desenvolvimento backend, incluindo:
+---
 
-- Arquitetura em camadas
+## 📖 About the project
+
+**TaskFlow API** was built to simulate a backend used in a real production environment.
+
+Beyond the task CRUD, the project demonstrates important backend development concepts, including:
+
+- Layered architecture
 - Repository Pattern
-- Autenticação JWT
-- Validação de dados
-- Isolamento de dados entre usuários
-- Testes automatizados
+- JWT authentication
+- Data validation
+- Data isolation between users
+- Automated testing
 - Docker
-- Documentação automática
+- Automatic documentation
+
+[↑ Back to top](#-taskflow-api)
 
 ---
 
-# ✨ Principais funcionalidades
+## ✨ Key features
 
-- 🔐 Cadastro e autenticação com JWT
-- 🔒 Hash de senha utilizando bcrypt
-- ✅ CRUD completo de tarefas
-- 📊 Dashboard com estatísticas
-- 🔍 Filtros avançados
-- 📄 Paginação
+- 🔐 Sign-up and authentication with JWT
+- 🔒 Password hashing using bcrypt
+- ✅ Full task CRUD
+- 📊 Dashboard with statistics
+- 🔍 Advanced filters
+- 📄 Pagination
 - 📚 Swagger UI
-- 🐳 Docker e Docker Compose
-- 🧪 Testes unitários
-- 👤 Isolamento de dados por usuário
+- 🐳 Docker and Docker Compose
+- 🧪 Unit tests
+- 👤 Per-user data isolation
+
+[↑ Back to top](#-taskflow-api)
 
 ---
 
-# 🏗 Arquitetura
+## 🏗 Architecture
 
-O projeto segue uma arquitetura em camadas para separar responsabilidades.
+The project follows a layered architecture to separate responsibilities.
 
 ```
 Client
@@ -72,50 +98,54 @@ Prisma ORM
 PostgreSQL
 ```
 
-Cada camada possui uma responsabilidade específica, facilitando manutenção, testes e evolução do sistema.
+Each layer has a specific responsibility, making the system easier to maintain, test, and evolve.
+
+[↑ Back to top](#-taskflow-api)
 
 ---
 
-# 🛠 Tecnologias
+## 🛠 Technologies
 
-## Backend
+### Backend
 
 - TypeScript
 - Node.js
 - Fastify
 
-## Banco de dados
+### Database
 
 - PostgreSQL 16
 - Prisma ORM
 
-## Autenticação
+### Authentication
 
 - JWT
 - bcryptjs
 
-## Validação
+### Validation
 
 - Zod
 
-## Testes
+### Testing
 
 - Vitest
 - Coverage V8
 
-## Documentação
+### Documentation
 
 - Swagger
 - Swagger UI
 
-## Infraestrutura
+### Infrastructure
 
 - Docker
 - Docker Compose
 
+[↑ Back to top](#-taskflow-api)
+
 ---
 
-# 📁 Estrutura do projeto
+## 📁 Project structure
 
 ```text
 src/
@@ -137,16 +167,18 @@ tests/
 docs/
 ```
 
+[↑ Back to top](#-taskflow-api)
+
 ---
 
-# 🔑 Fluxo de autenticação
+## 🔑 Authentication flow
 
 ```text
-Cadastro
+Sign-up
       │
       ▼
 
-Hash da senha (bcrypt)
+Password hashing (bcrypt)
 
       │
       ▼
@@ -166,26 +198,28 @@ Middleware
       │
       ▼
 
-Rotas protegidas
+Protected routes
 ```
+
+[↑ Back to top](#-taskflow-api)
 
 ---
 
-# 📚 Endpoints
+## 📚 Endpoints
 
-## Autenticação
+### Authentication
 
-| Método | Endpoint |
-|---------|----------|
+| Method | Endpoint |
+|--------|----------|
 | POST | /users |
 | POST | /sessions |
 
 ---
 
-## Tarefas
+### Tasks
 
-| Método | Endpoint |
-|---------|----------|
+| Method | Endpoint |
+|--------|----------|
 | GET | /tasks |
 | GET | /tasks/:id |
 | POST | /tasks |
@@ -195,22 +229,24 @@ Rotas protegidas
 
 ---
 
-## Dashboard
+### Dashboard
 
-| Método | Endpoint |
-|---------|----------|
+| Method | Endpoint |
+|--------|----------|
 | GET | /dashboard |
+
+[↑ Back to top](#-taskflow-api)
 
 ---
 
-# 🚀 Executando o projeto
+## 🚀 Running the project
 
-## Pré-requisitos
+### Prerequisites
 
 - Node.js 20+
 - PostgreSQL
 
-### Instalação
+### Installation
 
 ```bash
 git clone ...
@@ -220,7 +256,7 @@ cd taskflow-api
 npm install
 ```
 
-Configure o `.env`
+Set up the `.env` file
 
 ```env
 DATABASE_URL=
@@ -228,7 +264,7 @@ JWT_SECRET=
 PORT=
 ```
 
-Execute as migrations
+Run the migrations
 
 ```bash
 npx prisma migrate dev
@@ -236,98 +272,115 @@ npx prisma migrate dev
 npx prisma generate
 ```
 
-Inicie
+Start the app
 
 ```bash
 npm run dev
 ```
 
+[↑ Back to top](#-taskflow-api)
+
 ---
 
-# 🐳 Docker
+## 🐳 Docker
 
-Produção
+Production
 
 ```bash
 docker compose up -d
 ```
 
-Desenvolvimento
+Development
 
 ```bash
 docker compose --profile dev up -d
 ```
 
+[↑ Back to top](#-taskflow-api)
+
 ---
 
-# 📖 Swagger
+## 📖 Swagger
 
-Após iniciar a aplicação:
+After starting the application:
 
 ```
 http://localhost:3333/docs
 ```
 
+[↑ Back to top](#-taskflow-api)
+
 ---
 
-# 🧪 Testes
+## 🧪 Tests
 
 ```bash
 npm test
 ```
 
-Cobertura
+Coverage
 
 ```bash
 npm run test:coverage
 ```
 
-O projeto possui cobertura de:
+The project has coverage of:
 
 - Statements: 100%
 - Branches: 100%
 - Functions: 100%
 - Lines: 100%
 
+[↑ Back to top](#-taskflow-api)
+
 ---
 
-# 📌 Diferenciais técnicos
+## 📌 Technical highlights
 
-- Arquitetura em camadas
+- Layered architecture
 - Repository Pattern
 - JWT Authentication
-- Validação com Zod
+- Validation with Zod
 - Prisma ORM
-- Docker Multi-stage
+- Multi-stage Docker
 - Swagger
-- Testes automatizados
-- Isolamento de dados por usuário
-- Paginação
-- Filtros dinâmicos
-- Dashboard com estatísticas
+- Automated tests
+- Per-user data isolation
+- Pagination
+- Dynamic filters
+- Dashboard with statistics
+
+[↑ Back to top](#-taskflow-api)
 
 ---
 
-# 🛣 Roadmap
+## 🛣 Roadmap
 
 - [ ] Refresh Token
-- [ ] Upload de anexos
+- [ ] File upload
 - [ ] Soft Delete
 - [ ] Rate Limiting
-- [ ] Logs estruturados
+- [ ] Structured logs
 - [ ] Redis Cache
-- [ ] Testes E2E
+- [ ] E2E tests
+- [ ] GitHub Actions
+
+[↑ Back to top](#-taskflow-api)
 
 ---
 
-# 🤝 Contribuição
+## 🤝 Contributing
 
-Contribuições são bem-vindas.
+Contributions are welcome.
 
-Sinta-se à vontade para abrir Issues ou Pull Requests.
+Feel free to open Issues or Pull Requests.
+
+[↑ Back to top](#-taskflow-api)
 
 ---
 
-# 📄 Licença
+## 📄 License
 
-Este projeto está licenciado sob a licença MIT.
+This project is licensed under the MIT license.
+
+[↑ Back to top](#-taskflow-api)
