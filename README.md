@@ -33,7 +33,6 @@
 - [Swagger](#-swagger)
 - [Tests](#-tests)
 - [Technical highlights](#-technical-highlights)
-- [Roadmap](#-roadmap)
 - [Contributing](#-contributing)
 - [License](#-license)
 
@@ -349,21 +348,6 @@ The project has coverage of:
 - Pagination
 - Dynamic filters
 - Dashboard with statistics
-
-[↑ Back to top](#-taskflow-api)
-
----
-
-## 🛣 Roadmap
-
-- [ ] Refresh Token
-- [ ] File upload
-- [ ] Soft Delete
-- [ ] Rate Limiting
-- [ ] Structured logs
-- [ ] Redis Cache
-- [ ] E2E tests
-- [ ] GitHub Actions
 
 [↑ Back to top](#-taskflow-api)
 
